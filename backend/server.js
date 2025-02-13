@@ -1,5 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
+import mongoose from "mongoose";
 import { connectDB } from "./config/db.js";
 import Produto from "./models/Produto.js"
 
@@ -8,10 +9,14 @@ dotenv.config();
 const app  = express()
 
 app.use(express.json())
-app.use(express.urlencoded({extended:false}))
 
-app.get("/produtos" , (req, res) => {
-    
+app.get("/produtos" , async(req, res) => {
+    try {
+        const produtos = await Produto.find({})
+        res.status(200).json({sucess:true, data: produtos})
+    } catch (error) {
+        res.status(500).json({sucess:false, message: "Erro no Servidor"})
+    }
 })
 
 app.post("/produtos" , async(req, res) => {
@@ -32,6 +37,35 @@ app.post("/produtos" , async(req, res) => {
     }
 })
 
+app.put("/produtos/:id", async(req,res) => {
+    const { id } = req.params
+
+    const produtos = req.body
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+		return res.status(404).json({ success: false, message: "Id Invalido"});
+	}
+
+   try {
+    const updateProduto = await Produto.findByIdAndUpdate(id, produtos, {new:true})
+    res.status(200).json({sucess:true, data: updateProduto})
+   } catch (error) {
+    res.status(500).json({sucess:false, message: "Erro no Servidor"})
+   }
+})
+
+app.delete("/produtos/:id", async(req, res) => {
+
+    const { id } = req.params
+
+  try {
+    await Produto.findByIdAndDelete(id)
+    res.status(201).json({sucess:true, message: "Produto Deletado"})
+  } catch (error) {
+    res.status(404).json({sucess:false, message: "Produto Não Encontrado"})
+  }
+
+})
 
 app.listen(2621, () =>{
     connectDB();
