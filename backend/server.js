@@ -6,6 +6,7 @@ import produtoRoute from './routes/Produto.routes.js'
 dotenv.config();
 
 const app  = express()
+const port = process.env.PORT
 
 app.use(express.json())
 
@@ -13,5 +14,5 @@ app.use("/produtos", produtoRoute)
 
 app.listen(2621, () =>{
     connectDB();
-    console.log("Servidor iniciado em http://localhost:2621")
+    console.log("Servidor iniciado em http://localhost:" + port)
 })
