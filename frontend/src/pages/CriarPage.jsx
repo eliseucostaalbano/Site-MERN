@@ -1,13 +1,6 @@
-import {
-  Box,
-  Button,
-  Container,
-  Heading,
-  Input,
-  useColorModeValue,
-  VStack,
-} from "@chakra-ui/react";
+import {Box, Button, Container, Heading, Input, useColorModeValue, VStack,} from "@chakra-ui/react";
 import { useState } from "react";
+import { usarLojaProdutos } from "../loja/Produto";
 
 const CriarPage = () => {
   const [novoProduto, setNovoProduto] = useState({
@@ -15,9 +8,12 @@ const CriarPage = () => {
     preço: "",
     imagem: "",
   });
-
-  const handleAddProduto = ()=> {
-  console.log("acertou")
+const {criarProduto} = usarLojaProdutos()
+//lembrar de rodar o sevidor backend
+  const handleAddProduto = async() => {
+  const {success, message} = await criarProduto(novoProduto)
+  console.log("Sucess", success)
+  console.log("Message", message)
   }
 
   return (

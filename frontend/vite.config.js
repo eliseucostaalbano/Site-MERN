@@ -5,4 +5,11 @@ import tailwindcss from "@tailwindcss/vite";
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), tsconfigPaths() ,tailwindcss(),],
+  server: {
+		proxy: {
+			"/produtos": {
+				target: "http://localhost:2621",
+			},
+		},
+  }
 })
