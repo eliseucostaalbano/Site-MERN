@@ -17,5 +17,22 @@ export const usarLojaProdutos = create((set) => ({
         const data = await res.json()
         set((state) => ({ produtos: [...state.produtos, data.data] }));
 		return { success: true, message: "Produto criado com sucesso" };
-    }
+    },
+    mostarProdutos: async () => {
+		const res = await fetch("/produtos");
+		const data = await res.json();
+		set({ produtos: data.data });
+	},
+    deletarProduto: async (pid) => {
+		const res = await fetch(`/produtos/${pid}`, {
+			method: "DELETE",
+		});
+		const data = await res.json();
+		if (!data.success) return { success: false, message: data.message };
+
+		// update the ui immediately, without needing a refresh
+		set((state) => ({ produtos: state.produtos.filter((produto) => produto._id !== pid) }));
+		return { success: true, message: data.message };
+	},
+    
 }))
