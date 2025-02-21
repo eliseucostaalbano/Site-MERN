@@ -28,11 +28,31 @@ export const usarLojaProdutos = create((set) => ({
 			method: "DELETE",
 		});
 		const data = await res.json();
-		if (!data.success) return { success: false, message: data.message };
-
-		// update the ui immediately, without needing a refresh
-		set((state) => ({ produtos: state.produtos.filter((produto) => produto._id !== pid) }));
-		return { success: true, message: data.message };
+		if (!data.success){
+            set((state) => ({ produtos: state.produtos.filter((produto) => produto._id !== pid) })); 
+            return { success: true, message: data.message };
+        }else{
+            return { success: false, message: data.message };
+        }
 	},
-    
+    updateProduto: async (pid, updatedProduto) => {
+		const res = await fetch(`/produtos/${pid}`, {
+			method: "PUT",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify(updatedProduto),
+		});
+		const data = await res.json();
+		if (!data.success){
+            // update the ui immediately, without needing a refresh
+		set((state) => ({
+			produtos: state.produtos.map((produto) => (produto._id === pid ? data.data : produto)),
+		}));
+            return { success: true, message: data.message };
+        } 
+       else{
+        return { success: true, message: data.message };
+       }
+	},
 }))

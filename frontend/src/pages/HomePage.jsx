@@ -38,7 +38,7 @@ const Homepage = () => {
           ))}
         </SimpleGrid>
 
-        {produtos.lenght === 0 && (
+        {produtos.length === 0 && (
           <Text
             fontSize="xl"
             textAlign={"center"}
